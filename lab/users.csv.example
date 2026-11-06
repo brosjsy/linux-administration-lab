@@ -1,0 +1,3 @@
+# username,full name,group,ssh_public_key_file(optional)
+alice,Alice Ivanova,support
+bob,Bob Petrov,support
