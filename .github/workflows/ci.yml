@@ -14,6 +14,15 @@ jobs:
           bash scripts/user_onboard.sh lab/users.csv.example
           CRON_LOG_DIR=/tmp/cronlog bash scripts/cron_wrapper.sh smoke echo ok
           bash scripts/harden_audit.sh || true
+          bash scripts/task_search.sh nginx reload -n 3
+  tasks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Regenerate task library and check it is up to date
+        run: |
+          python3 tools/generate_tasks.py
+          git diff --exit-code tasks/
   ansible:
     runs-on: ubuntu-latest
     steps:
