@@ -1,0 +1,41 @@
+---
+- name: Support team accounts
+  hosts: all
+  tags: [users]
+  tasks:
+    - name: Groups exist
+      ansible.builtin.group:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - "{{ support_group }}"
+        - "{{ ssh_allow_group }}"
+
+    - name: Users exist
+      ansible.builtin.user:
+        name: "{{ item.name }}"
+        comment: "{{ item.comment }}"
+        groups: "{{ support_group }},{{ ssh_allow_group }}"
+        append: true
+        shell: /bin/bash
+        create_home: true
+      loop: "{{ support_users }}"
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: SSH keys installed
+      ansible.posix.authorized_key:
+        user: "{{ item.name }}"
+        key: "{{ item.key }}"
+        state: present
+      loop: "{{ support_users }}"
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: Limited sudo for the support group
+      ansible.builtin.copy:
+        dest: /etc/sudoers.d/support
+        mode: "0440"
+        content: |
+          %{{ support_group }} ALL=(root) /usr/bin/systemctl restart nginx, /usr/bin/systemctl status *, /usr/bin/journalctl *
+        validate: /usr/sbin/visudo -cf %s

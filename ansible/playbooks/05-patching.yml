@@ -1,0 +1,45 @@
+---
+- name: Rolling security updates
+  hosts: all
+  serial: 1                 # one server at a time keeps the service up
+  max_fail_percentage: 0    # stop the rollout on the first failure
+  tags: [patching]
+  tasks:
+    - name: Update all packages (Ubuntu)
+      ansible.builtin.apt:
+        upgrade: dist
+        update_cache: true
+        autoremove: true
+      when: ansible_os_family == "Debian"
+
+    - name: Update all packages (Rocky)
+      ansible.builtin.dnf:
+        name: "*"
+        state: latest
+      when: ansible_os_family == "RedHat"
+
+    - name: Check if reboot is required (Ubuntu)
+      ansible.builtin.stat:
+        path: /var/run/reboot-required
+      register: reboot_file
+      when: ansible_os_family == "Debian"
+
+    - name: Check if reboot is required (Rocky)
+      ansible.builtin.command: needs-restarting -r
+      register: needs_restart
+      changed_when: false
+      failed_when: needs_restart.rc not in [0, 1]
+      when: ansible_os_family == "RedHat"
+
+    - name: Reboot only when needed
+      ansible.builtin.reboot:
+        reboot_timeout: 600
+      when: >
+        (reboot_file.stat is defined and reboot_file.stat.exists) or
+        (needs_restart.rc is defined and needs_restart.rc == 1)
+
+    - name: Service check after patching
+      ansible.builtin.command: systemctl is-system-running
+      register: sysstate
+      changed_when: false
+      failed_when: sysstate.stdout not in ["running", "degraded"]

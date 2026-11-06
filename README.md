@@ -1,56 +1,89 @@
 # Linux Administration Lab
 
-Hands-on Linux system administration lab, from the first login to running and supporting production-style services.
-Every module has the commands, the reasoning behind them and a verification step, and the `scripts/` folder holds tested automation I use in the lab.
+Hands-on Linux system administration lab, from the first login to securing, automating and recovering servers like a professional.
+Every module has commands, the reasoning behind them and a check; the lab also includes tested Bash scripts, Ansible playbooks for managing many servers, troubleshooting runbooks and 40 real-world scenarios.
 
 **Author:** Joseph Olawoyin, MSc Information Security student, ITMO University, Saint Petersburg, Russia
 **Lab environment:** Ubuntu Server 24.04 LTS and Rocky Linux 9 (VirtualBox / Vagrant, see `lab/Vagrantfile`)
+**Start here:** [LEARNING-PATH.md](LEARNING-PATH.md) | [scenarios/](scenarios/README.md)
 
-## What this lab covers (A to Z)
+## Modules (beginner to professional)
 
-| # | Module | Key tools | File |
-|---|--------|-----------|------|
-| 01 | Filesystem, navigation and help | `ls`, `find`, `grep`, `less`, `man`, FHS | [docs/01-basics.md](docs/01-basics.md) |
-| 02 | Users, groups and sudo | `useradd`, `usermod`, `passwd`, `chage`, `visudo` | [docs/02-users-groups.md](docs/02-users-groups.md) |
-| 03 | Permissions and ACLs | `chmod`, `chown`, `umask`, SUID/SGID/sticky, `setfacl` | [docs/03-permissions.md](docs/03-permissions.md) |
-| 04 | Processes and services | `ps`, `top`, `kill`, `systemctl`, unit files | [docs/04-processes-services.md](docs/04-processes-services.md) |
-| 05 | Package management | `apt`, `dnf`, `rpm`, `dpkg`, repositories | [docs/05-packages.md](docs/05-packages.md) |
-| 06 | Storage and LVM | `lsblk`, `fdisk`, `mkfs`, `mount`, `/etc/fstab`, LVM | [docs/06-storage-lvm.md](docs/06-storage-lvm.md) |
-| 07 | Networking | `ip`, `ss`, `nmcli`, `netplan`, `ping`, `traceroute`, `dig` | [docs/07-networking.md](docs/07-networking.md) |
-| 08 | SSH and hardening | keys, `sshd_config`, `fail2ban` | [docs/08-ssh-hardening.md](docs/08-ssh-hardening.md) |
-| 09 | Firewall | `ufw`, `firewalld`, `nftables` | [docs/09-firewall.md](docs/09-firewall.md) |
-| 10 | Logs and monitoring | `journalctl`, `/var/log`, `logrotate`, `vmstat`, `iostat`, `df`, `free` | [docs/10-logs-monitoring.md](docs/10-logs-monitoring.md) |
-| 11 | Scheduling | `cron`, `systemd` timers | [docs/11-scheduling.md](docs/11-scheduling.md) |
-| 12 | Backup and restore | `tar`, `rsync`, restore testing | [docs/12-backup.md](docs/12-backup.md) |
-| 13 | Infrastructure services | DNS (BIND), DHCP (Kea), file server (Samba, NFS), web (Nginx) | [docs/13-infra-services.md](docs/13-infra-services.md) |
-| 14 | Directory services | LDAP / FreeIPA basics, joining Linux to AD (`realmd`, `sssd`) | [docs/14-directory-services.md](docs/14-directory-services.md) |
-| 15 | Bash scripting | variables, loops, functions, exit codes, `set -euo pipefail` | [docs/15-bash-scripting.md](docs/15-bash-scripting.md) |
-| 16 | Troubleshooting runbooks | disk full, service down, high load, no SSH, DNS failure | [runbooks/](runbooks/) |
-| 17 | Service desk practice | ticket triage, knowledge base articles | [tickets/](tickets/), [kb/](kb/) |
+| # | Level | Module | Key tools |
+|---|-------|--------|-----------|
+| 01 | L1 | [Filesystem, navigation and help](docs/01-basics.md) | `ls`, `find`, `grep`, `less`, `man`, FHS |
+| 02 | L1 | [Users, groups and sudo](docs/02-users-groups.md) | `useradd`, `usermod`, `chage`, `visudo` |
+| 03 | L1 | [Permissions and ACLs](docs/03-permissions.md) | `chmod`, `chown`, SUID/SGID/sticky, `setfacl` |
+| 04 | L1 | [Processes and services](docs/04-processes-services.md) | `ps`, `top`, `kill`, `systemctl`, unit files |
+| 05 | L1 | [Package management](docs/05-packages.md) | `apt`, `dnf`, `rpm`, `dpkg` |
+| 06 | L2 | [Storage and LVM](docs/06-storage-lvm.md) | `lsblk`, `fdisk`, `mkfs`, `/etc/fstab`, LVM |
+| 07 | L2 | [Networking](docs/07-networking.md) | `ip`, `ss`, `nmcli`, `netplan`, `dig`, `tcpdump` |
+| 08 | L2 | [SSH and hardening](docs/08-ssh-hardening.md) | keys, `sshd_config`, `fail2ban` |
+| 09 | L2 | [Firewall](docs/09-firewall.md) | `ufw`, `firewalld`, `nftables` |
+| 10 | L2 | [Logs and monitoring basics](docs/10-logs-monitoring.md) | `journalctl`, `logrotate`, `vmstat`, `iostat` |
+| 11 | L1 | [Scheduling basics](docs/11-scheduling.md) | `cron`, `systemd` timers |
+| 12 | L2 | [Backup and restore](docs/12-backup.md) | `tar`, `rsync`, restore testing |
+| 13 | L3 | [Infrastructure services](docs/13-infra-services.md) | DNS (BIND), DHCP (Kea), Samba, NFS, Nginx |
+| 14 | L3 | [Directory services](docs/14-directory-services.md) | LDAP, FreeIPA, AD join (`realmd`, `sssd`) |
+| 15 | L2 | [Bash scripting](docs/15-bash-scripting.md) | functions, exit codes, `set -euo pipefail` |
+| 16 | L2 | [Cron in practice: 11 scenarios](docs/16-cron-scenarios.md) | `crontab`, `/etc/cron.d`, `flock`, anacron, timers |
+| 17 | L3 | [Ansible: managing many servers](docs/17-ansible.md) | inventory, playbooks, handlers, `--check --diff` |
+| 18 | L4 | [Linux hardening](docs/18-hardening.md) | CIS-style checklist, `sysctl`, PAM, Lynis |
+| 19 | L3 | [SELinux and AppArmor](docs/19-selinux-apparmor.md) | `semanage`, `restorecon`, `aa-status` |
+| 20 | L3 | [Auditing and file integrity](docs/20-audit-integrity.md) | `auditd`, `ausearch`, AIDE, Lynis |
+| 21 | L3 | [TLS certificates](docs/21-tls-certificates.md) | `openssl`, `certbot` |
+| 22 | L3 | [Containers](docs/22-containers.md) | Docker, Podman, Compose |
+| 23 | L4 | [Monitoring: Zabbix and Prometheus](docs/23-monitoring.md) | `zabbix-agent2`, `node_exporter`, alert rules |
+| 24 | L4 | [Boot and recovery](docs/24-boot-recovery.md) | GRUB, rescue, root password reset, `fsck` |
+| 25 | L4 | [Performance and limits](docs/25-performance-tuning.md) | USE method, `ulimit`, cgroups, `tuned` |
+
+Levels: **L1** beginner, **L2** junior admin / on-duty engineer, **L3** admin, **L4** professional.
+
+## Ansible: control many servers from one place
+
+[`ansible/`](ansible/) manages the whole lab fleet over SSH with no agents:
+baseline packages and time sync, support team accounts with limited sudo, SSH and kernel hardening, firewall for Ubuntu and Rocky, rolling patching with reboot only when needed, cron job deployment, Nginx with templates and a fleet health report.
+
+```bash
+cd ansible
+ansible all -m ping
+ansible-playbook site.yml --check --diff
+```
 
 ## Scripts
 
 | Script | What it does |
 |--------|--------------|
-| [`scripts/health_check.sh`](scripts/health_check.sh) | One-shot server health report: uptime, load, memory, disk, failed units, listening ports, last logins |
-| [`scripts/disk_alert.sh`](scripts/disk_alert.sh) | Warns when any filesystem passes a usage threshold (cron-friendly, non-zero exit on alert) |
-| [`scripts/user_onboard.sh`](scripts/user_onboard.sh) | Creates users from a CSV file with groups, forced password change and SSH key (dry-run by default) |
-| [`scripts/backup.sh`](scripts/backup.sh) | Timestamped `tar` backups with retention and an integrity check |
-| [`scripts/log_report.sh`](scripts/log_report.sh) | Summary of failed SSH logins, sudo use and service errors from the journal |
-| [`scripts/service_watchdog.sh`](scripts/service_watchdog.sh) | Checks a list of systemd services and restarts any that are down, with logging |
+| [`health_check.sh`](scripts/health_check.sh) | One-shot server health report: OS, load, memory, disk, inodes, failed units, ports, logins |
+| [`disk_alert.sh`](scripts/disk_alert.sh) | Alerts when any filesystem passes a threshold (cron-friendly exit codes) |
+| [`user_onboard.sh`](scripts/user_onboard.sh) | Creates users from CSV with groups, forced password change and SSH key (dry-run by default) |
+| [`backup.sh`](scripts/backup.sh) | Timestamped `tar` backups with retention and integrity check |
+| [`log_report.sh`](scripts/log_report.sh) | Failed SSH logins by IP, sudo use and service errors from the journal |
+| [`service_watchdog.sh`](scripts/service_watchdog.sh) | Restarts listed systemd services that are down, with logging and escalation exit code |
+| [`cron_wrapper.sh`](scripts/cron_wrapper.sh) | Runs any cron job with a lock (no overlap), timeout, timestamped log and syslog on failure |
+| [`harden_audit.sh`](scripts/harden_audit.sh) | Read-only hardening check: SSH, accounts, file modes, sysctl, firewall, services, mounts |
+| [`ssl_expiry_check.sh`](scripts/ssl_expiry_check.sh) | Warns when TLS certificates expire within N days |
 
-All scripts pass [ShellCheck](https://www.shellcheck.net/) in CI (`.github/workflows/shellcheck.yml`).
+All scripts pass [ShellCheck](https://www.shellcheck.net/) and all playbooks pass `ansible-playbook --syntax-check` in CI (`.github/workflows/ci.yml`).
+
+## On-duty and service desk practice
+
+- [runbooks/](runbooks/): disk full, service down, high load, SSH access, DNS failure
+- [tickets/](tickets/): ticket triage, worked examples, escalation template
+- [kb/](kb/): knowledge base articles for users
+- [scenarios/](scenarios/README.md): 40 real scenarios from L1 to L4
 
 ## Quick start
 
 ```bash
 git clone https://github.com/brosjsy/linux-administration-lab.git
 cd linux-administration-lab/lab
-vagrant up            # starts ubuntu-srv and rocky-srv
+vagrant up                       # ubuntu-srv 192.168.56.10, rocky-srv 192.168.56.20
 vagrant ssh ubuntu-srv
 sudo /vagrant/scripts/health_check.sh
+sudo /vagrant/scripts/harden_audit.sh
 ```
 
 ## Skills demonstrated
 
-Linux administration (Debian and RHEL families), systemd, storage and LVM, TCP/IP networking and troubleshooting, DNS and DHCP, file servers, SSH hardening and firewalls, log analysis, backup and restore, Bash automation, ticket triage and writing knowledge base articles.
+Linux administration (Debian and RHEL families), systemd, storage and LVM, TCP/IP networking, DNS and DHCP, file servers, directory services, cron and systemd timers, Ansible automation, Linux hardening (SSH, sysctl, PAM, SELinux/AppArmor, auditd, AIDE, Lynis), TLS, containers, monitoring (Zabbix, Prometheus), boot recovery, performance tuning, Bash scripting, ticket triage and knowledge base writing.

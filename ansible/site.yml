@@ -1,0 +1,15 @@
+---
+- name: Baseline
+  ansible.builtin.import_playbook: playbooks/01-baseline.yml
+- name: Users
+  ansible.builtin.import_playbook: playbooks/02-users.yml
+- name: SSH hardening
+  ansible.builtin.import_playbook: playbooks/03-ssh-hardening.yml
+- name: Firewall
+  ansible.builtin.import_playbook: playbooks/04-firewall.yml
+- name: Cron jobs
+  ansible.builtin.import_playbook: playbooks/06-cron-jobs.yml
+- name: Nginx
+  ansible.builtin.import_playbook: playbooks/07-nginx.yml
+- name: Health report
+  ansible.builtin.import_playbook: playbooks/08-health-report.yml

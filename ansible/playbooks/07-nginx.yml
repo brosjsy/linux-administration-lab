@@ -1,0 +1,60 @@
+---
+- name: Web servers with Nginx
+  hosts: web
+  tags: [nginx]
+  tasks:
+    - name: Install nginx
+      ansible.builtin.package:
+        name: nginx
+        state: present
+
+    - name: Site root
+      ansible.builtin.file:
+        path: /var/www/lab
+        state: directory
+        mode: "0755"
+
+    - name: Index page
+      ansible.builtin.template:
+        src: ../templates/index.html.j2
+        dest: /var/www/lab/index.html
+        mode: "0644"
+
+    - name: Site config
+      ansible.builtin.template:
+        src: ../templates/nginx-site.conf.j2
+        dest: /etc/nginx/sites-available/lab
+        mode: "0644"
+      notify: Reload nginx
+
+    - name: Enable site
+      ansible.builtin.file:
+        src: /etc/nginx/sites-available/lab
+        dest: /etc/nginx/sites-enabled/lab
+        state: link
+      notify: Reload nginx
+
+    - name: Remove default site
+      ansible.builtin.file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      notify: Reload nginx
+
+    - name: Nginx running
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: true
+
+  handlers:
+    - name: Reload nginx
+      ansible.builtin.shell: nginx -t && systemctl reload nginx
+      changed_when: true
+
+  post_tasks:
+    - name: Health endpoint answers
+      ansible.builtin.uri:
+        url: "http://{{ ansible_host }}/health"
+        return_content: true
+      delegate_to: localhost
+      become: false

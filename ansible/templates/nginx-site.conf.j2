@@ -1,0 +1,12 @@
+# Managed by Ansible
+server {
+    listen 80 default_server;
+    server_name {{ inventory_hostname }};
+    root /var/www/lab;
+    index index.html;
+
+    location /health {
+        access_log off;
+        return 200 "OK {{ inventory_hostname }}\n";
+    }
+}

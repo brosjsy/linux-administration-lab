@@ -20,3 +20,5 @@ WantedBy=timers.target
 ```bash
 sudo systemctl enable --now healthcheck.timer && systemctl list-timers
 ```
+
+More real-world cron scenarios: [16-cron-scenarios.md](16-cron-scenarios.md). Deploying jobs to many servers: [17-ansible.md](17-ansible.md).

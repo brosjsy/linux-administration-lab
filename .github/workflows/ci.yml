@@ -1,0 +1,28 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint scripts
+        run: shellcheck scripts/*.sh
+      - name: Smoke test
+        run: |
+          bash scripts/health_check.sh > /dev/null
+          bash scripts/disk_alert.sh 100
+          bash scripts/user_onboard.sh lab/users.csv.example
+          CRON_LOG_DIR=/tmp/cronlog bash scripts/cron_wrapper.sh smoke echo ok
+          bash scripts/harden_audit.sh || true
+  ansible:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Ansible
+        run: pipx install --include-deps ansible
+      - name: Syntax check playbooks
+        working-directory: ansible
+        run: |
+          for p in site.yml playbooks/*.yml; do
+            ansible-playbook --syntax-check "$p"
+          done

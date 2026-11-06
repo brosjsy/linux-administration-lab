@@ -1,0 +1,30 @@
+---
+- name: Fleet health report
+  hosts: all
+  become: false
+  gather_facts: true
+  tags: [report]
+  tasks:
+    - name: Root filesystem usage
+      ansible.builtin.shell: df -h / | awk 'NR==2 {print $5}'
+      register: root_usage
+      changed_when: false
+
+    - name: Failed units
+      ansible.builtin.command: systemctl --failed --no-legend --plain
+      register: failed_units
+      changed_when: false
+
+    - name: Write one line per host
+      ansible.builtin.lineinfile:
+        path: "{{ playbook_dir }}/../reports/health.txt"
+        create: true
+        mode: "0644"
+        regexp: "^{{ inventory_hostname }} "
+        line: >-
+          {{ inventory_hostname }} | {{ ansible_distribution }} {{ ansible_distribution_version }} |
+          uptime {{ (ansible_uptime_seconds / 3600) | round(1) }} h |
+          mem free {{ ansible_memfree_mb }} MB |
+          root {{ root_usage.stdout }} |
+          failed units: {{ failed_units.stdout_lines | length }}
+      delegate_to: localhost

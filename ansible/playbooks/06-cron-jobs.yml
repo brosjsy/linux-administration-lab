@@ -1,0 +1,54 @@
+---
+- name: Deploy lab scripts and cron jobs to all servers
+  hosts: all
+  tags: [cron]
+  tasks:
+    - name: Cron daemon installed and running
+      ansible.builtin.package:
+        name: "{{ 'cron' if ansible_os_family == 'Debian' else 'cronie' }}"
+        state: present
+
+    - name: Cron service enabled
+      ansible.builtin.service:
+        name: "{{ 'cron' if ansible_os_family == 'Debian' else 'crond' }}"
+        state: started
+        enabled: true
+
+    - name: Script directory
+      ansible.builtin.file:
+        path: /opt/lab/scripts
+        state: directory
+        mode: "0755"
+
+    - name: Copy scripts
+      ansible.builtin.copy:
+        src: "../../scripts/{{ item }}"
+        dest: "/opt/lab/scripts/{{ item }}"
+        mode: "0755"
+      loop: "{{ lab_scripts }}"
+
+    - name: Disk alert every 15 minutes
+      ansible.builtin.cron:
+        name: disk alert
+        minute: "*/15"
+        job: "/opt/lab/scripts/cron_wrapper.sh disk_alert /opt/lab/scripts/disk_alert.sh {{ disk_alert_threshold }}"
+        cron_file: lab-monitoring
+        user: root
+
+    - name: Nightly backup of /etc at 02:30
+      ansible.builtin.cron:
+        name: etc backup
+        minute: "30"
+        hour: "2"
+        job: "/opt/lab/scripts/cron_wrapper.sh backup /opt/lab/scripts/backup.sh /etc /srv/backups {{ backup_keep_days }}"
+        cron_file: lab-backup
+        user: root
+
+    - name: Daily log report at 07:00
+      ansible.builtin.cron:
+        name: log report
+        minute: "0"
+        hour: "7"
+        job: "/opt/lab/scripts/log_report.sh > /var/log/lab-log-report.txt 2>&1"
+        cron_file: lab-reports
+        user: root

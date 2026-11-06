@@ -18,3 +18,5 @@ sudo apt install fail2ban && sudo systemctl enable --now fail2ban
 sudo fail2ban-client status sshd
 ```
 Rule: keep a second session open while changing SSH settings, so a mistake does not lock you out.
+
+Full hardening checklist: [18-hardening.md](18-hardening.md). Check a server with `scripts/harden_audit.sh`.

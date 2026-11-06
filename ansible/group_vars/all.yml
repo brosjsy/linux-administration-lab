@@ -1,0 +1,37 @@
+---
+timezone: Europe/Moscow
+
+base_packages:
+  - vim
+  - curl
+  - htop
+  - chrony
+  - rsync
+  - tar
+  - lsof
+
+support_group: support
+support_users:
+  - name: alice
+    comment: Alice Ivanova
+    key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIExampleKeyReplaceMe alice@lab"
+  - name: bob
+    comment: Bob Petrov
+    key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIExampleKeyReplaceMe bob@lab"
+
+ssh_allow_group: ssh-users
+allowed_tcp_ports:
+  - 22
+  - 80
+  - 443
+
+lab_scripts:
+  - health_check.sh
+  - disk_alert.sh
+  - backup.sh
+  - log_report.sh
+  - service_watchdog.sh
+  - cron_wrapper.sh
+
+disk_alert_threshold: 85
+backup_keep_days: 14

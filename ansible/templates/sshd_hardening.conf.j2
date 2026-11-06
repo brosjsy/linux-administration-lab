@@ -1,0 +1,12 @@
+# Managed by Ansible. Manual changes will be overwritten.
+PermitRootLogin no
+PasswordAuthentication no
+KbdInteractiveAuthentication no
+PubkeyAuthentication yes
+MaxAuthTries 3
+LoginGraceTime 30
+ClientAliveInterval 300
+ClientAliveCountMax 2
+X11Forwarding no
+AllowGroups {{ ssh_allow_group }} {{ support_group }}
+Banner /etc/issue.net
